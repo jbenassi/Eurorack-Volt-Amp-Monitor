@@ -4,6 +4,7 @@
 
 #include "INA226.h"
 #include <TFT_eSPI.h>     // Hardware-specific library
+#include <TFT_eWidget.h> 
 #include "Free_Fonts.h"
 
 
