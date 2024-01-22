@@ -1,8 +1,10 @@
 // Uses M5 Stack Core and INA2266 Sensor module
 // Displays graphically the Current Volt and Amp readings from Eurorack Powersupply
 // 
-
-#include "INA226.h"
+#include <Wire.h>
+#include <INA226_WE.h>
+#define I2C_ADDRESS 0x40
+//#include "INA226.h"
 #include <TFT_eSPI.h>     // Hardware-specific library
 #include <TFT_eWidget.h> 
 #include "Free_Fonts.h"
@@ -17,10 +19,10 @@
 #define RED2GREEN   5
 #define RAINBOW     6
 
-INA226 INA(0x40);
-
+//INA226 INA(0x40);
+INA226_WE INA = INA226_WE(I2C_ADDRESS);
 float maxVoltage = 13.00;
-float maxAmps = 8.00;
+float maxAmps = 4.00;
 
 float voltReading = 0;
 float ampReading = 0;
@@ -165,19 +167,24 @@ uint16_t rainbowColor(uint8_t spectrum)
 
   return red << 11 | green << 6 | blue;
 }
-void setup(void) 
+void setup() 
 {
 
  // Serial.begin(115200);
  // Serial.println(__FILE__);
  // Serial.print("INA226_LIB_VERSION: ");
  // Serial.println(INA226_LIB_VERSION);
+
+
+  Serial.begin(9600);
   Wire.begin();
-  if (!INA.begin() )
-  {
-    Serial.println("could not connect. Fix and Reboot");
+  if(!INA.init()){
+    Serial.println("Failed to init INA226. Check your wiring.");
+    while(1){}
   }
-  INA.setMaxCurrentShunt(1, 0.002);
+  Serial.println("INA226 Current Sensor Example Sketch - Continuous");
+  
+  INA.waitUntilConversionCompleted(); //if you comment this line the first data might be zero
 
 
   tft.init();
@@ -191,7 +198,7 @@ void setup(void)
   tft.setCursor(20, 30);
   tft.print("Voltage:");
   tft.setCursor(20, 128);
-  tft.print("Amps:");
+  tft.print("mA:");
 
   tft.setFreeFont(FSB9);
   tft.setCursor(220, 105);
@@ -206,8 +213,8 @@ void loop() {
 oldV = curVoltage;
 oldA = curAmps;
 
-curVoltage = INA.getBusVoltage();
-curAmps = INA.getCurrent_mA();
+curVoltage = INA.getBusVoltage_V();
+curAmps = INA.getCurrent_mA() / 10;
 
 voltReading = calculateVoltageSegmentDisplay(curVoltage, maxVoltage);
 ampReading = calculateAmperageSegments(curAmps, maxAmps);
@@ -237,10 +244,10 @@ ampReading = calculateAmperageSegments(curAmps, maxAmps);
   
   tft.setCursor(150, 130);
   tft.setTextColor(TFT_BLACK);
-  tft.print(String(oldA) + " A");
+  tft.print(String(oldA) + " mA");
   tft.setTextColor(TFT_WHITE);
   tft.setCursor(150, 130);
-  tft.print(String(curAmps) + " A");
+  tft.print(String(curAmps) + " mA");
 
   
 // Debug
