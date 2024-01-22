@@ -1,10 +1,9 @@
-// Uses M5 Stack Core module
+// Uses M5 Stack Core and INA2266 Sensor module
 // Displays graphically the Current Volt and Amp readings from Eurorack Powersupply
-
+// 
 
 #include "INA226.h"
 #include <TFT_eSPI.h>     // Hardware-specific library
-#include <TFT_eWidget.h>  // Widget library
 #include "Free_Fonts.h"
 
 
