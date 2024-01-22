@@ -1,18 +1,7 @@
-/*
-  Example animated analogue meters
+// Uses M5 Stack Core module
+// Displays graphically the Current Volt and Amp readings from Eurorack Powersupply
 
-  Needs Font 2 (also Font 4 if using large scale label)
 
-  Make sure all the display driver and pin connections are correct by
-  editing the User_Setup.h file in the TFT_eSPI library folder.
-
-  #########################################################################
-  ###### DON'T FORGET TO UPDATE THE User_Setup.h FILE IN THE LIBRARY ######
-  #########################################################################
-
-  Requires widget library here:
-  https://github.com/Bodmer/TFT_eWidget
-*/
 #include "INA226.h"
 #include <TFT_eSPI.h>     // Hardware-specific library
 #include <TFT_eWidget.h>  // Widget library
@@ -254,7 +243,7 @@ ampReading = calculateAmperageSegments(curAmps, maxAmps);
   tft.print(String(curAmps) + " A");
 
   
-
+// Debug
 //  Serial.println("\nBUS\tSHUNT\tCURRENT\tPOWER");
 //   for (int i = 0; i < 20; i++)
 //   {
